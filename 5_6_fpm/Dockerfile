@@ -11,15 +11,13 @@ RUN apt-get update && apt-get -y install \
   && apt-get -y purge wget
 
 RUN apt-get update && apt-get -y install \
-  php-pear \
   php5-memcache \
   php5-mysql \
   php5-fpm \
   php5-gd \
   php5-mcrypt \
-  && pecl install redis \
-  && echo "extension=redis.so" > /etc/php5/cli/php.ini \
-  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false php5-dev php-pear \
+  php5-redis \
+  && apt-get -y autoremove \
   && rm -rf /var/lib/apt/lists/*
 
 MAINTAINER Taylor Lovett
