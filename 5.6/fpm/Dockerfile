@@ -52,7 +52,7 @@ RUN set -x \
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps \
 	&& apt-get autoremove
 
-COPY docker-php-ext-* /usr/local/bin/
+COPY ../docker-php-ext-* /usr/local/bin/
 
 ENV extensionDeps=" \
         autoconf \
@@ -62,7 +62,6 @@ ENV extensionDeps=" \
         libpng12-dev \
         libmcrypt-dev \
         libxml2-dev \
-        libxml2 \
         libssl-dev \
         curl \
 	"
@@ -81,9 +80,10 @@ RUN extensions=" \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $extensionDeps \
     && apt-get autoremove
 
-RUN peclDeps=" \
+ENV peclDeps=" \
     curl \
     libssl-dev \
+    libxml2-dev \
     "
 
 RUN apt-get update && apt-get install -y --no-install-recommends $peclDeps \
