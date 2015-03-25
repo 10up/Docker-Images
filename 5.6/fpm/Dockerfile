@@ -1,3 +1,8 @@
+# Dockerfile written by 10up <sales@10up.com>
+#
+# Work derived from official PHP Docker Library:
+# Copyright (c) 2014-2015 Docker, Inc.
+
 FROM debian:wheezy
 
 ENV PHP_INI_DIR /usr/local/etc/php
@@ -91,5 +96,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends $peclDeps \
     && pecl install redis && echo extension=redis.so > $PHP_INI_DIR/conf.d/ext-redis.ini \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $peclDeps \
     && apt-get autoremove
+
+MAINTAINER 10up
 
 EXPOSE 9000
