@@ -57,7 +57,7 @@ RUN set -x \
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps \
 	&& apt-get autoremove
 
-COPY ../docker-php-ext-* /usr/local/bin/
+COPY docker-php-ext-* /usr/local/bin/
 
 ENV extensionDeps=" \
         autoconf \
