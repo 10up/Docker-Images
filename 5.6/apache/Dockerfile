@@ -8,13 +8,13 @@ FROM debian:wheezy
 ENV PHP_INI_DIR /usr/local/etc/php
 RUN mkdir -p $PHP_INI_DIR/conf.d
 
-RUN apt-get update && apt-get install -y apache2 apache2-utils apache2-mpm-prefork apache2-prefork-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
-
-RUN rm -rf /var/www/html && mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html && chown -R www-data:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html
+RUN apt-get update && apt-get install -y apache2 apache2-utils apache2-mpm-prefork apache2-prefork-dev --no-install-recommends
+    && rm -rf /var/www/html && mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html
+    && chown -R www-data:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html
+    && rm -rf /var/lib/apt/lists/*
 
 RUN mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.dist
 COPY apache2.conf /etc/apache2/apache2.conf
-
 
 ENV PHP_EXTRA_BUILD_DEPS apache2-dev
 ENV PHP_EXTRA_CONFIGURE_ARGS --with-apxs2=/usr/bin/apxs2
