@@ -99,4 +99,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends $peclDeps \
 
 MAINTAINER 10up
 
+WORKDIR /var/www/html
+COPY php-fpm.conf /usr/local/etc/
+
 EXPOSE 9000
+CMD ["php-fpm"]
