@@ -89,6 +89,10 @@ ENV peclDeps=" \
     curl \
     libssl-dev \
     libxml2-dev \
+    ca-certificates \
+    make \
+    autoconf \
+    gcc \
     "
 
 RUN apt-get update && apt-get install -y --no-install-recommends $peclDeps \
@@ -101,6 +105,8 @@ MAINTAINER 10up
 
 WORKDIR /var/www/html
 COPY php-fpm.conf /usr/local/etc/
+
+RUN apt-get update && apt-get install -y --no-install-recommends libxml2 libpng12-dev mcrypt curl && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 9000
 CMD ["php-fpm"]
