@@ -8,9 +8,10 @@ FROM debian:wheezy
 ENV PHP_INI_DIR /usr/local/etc/php
 RUN mkdir -p $PHP_INI_DIR/conf.d
 
-RUN apt-get update && apt-get install -y apache2 apache2-utils apache2-mpm-prefork apache2-prefork-dev --no-install-recommends
-    && rm -rf /var/www/html && mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html
-    && chown -R www-data:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html
+RUN apt-get update && apt-get install -y apache2 apache2-utils apache2-mpm-prefork apache2-prefork-dev --no-install-recommends \
+    && rm -rf /var/www/html \
+    && mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html \
+    && chown -R www-data:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mv /etc/apache2/apache2.conf /etc/apache2/apache2.conf.dist
@@ -98,6 +99,10 @@ ENV peclDeps=" \
     curl \
     libssl-dev \
     libxml2-dev \
+    ca-certificates \
+    make \
+    autoconf \
+    gcc \
     "
 
 RUN apt-get update && apt-get install -y --no-install-recommends $peclDeps \
@@ -107,5 +112,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends $peclDeps \
     && apt-get autoremove
 
 MAINTAINER 10up
+
+RUN apt-get update && apt-get install -y --no-install-recommends libxml2 libpng12-dev mcrypt curl && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 9000
