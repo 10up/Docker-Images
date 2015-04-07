@@ -77,8 +77,6 @@ RUN extensions=" \
         soap \
         mcrypt \
         mbstring \
-        xml \
-        simplexml \
     "; \
     apt-get update && apt-get install -y --no-install-recommends $extensionDeps \
     && docker-php-ext-install $extensions \
@@ -106,7 +104,14 @@ MAINTAINER 10up
 WORKDIR /var/www/html
 COPY php-fpm.conf /usr/local/etc/
 
-RUN apt-get update && apt-get install -y --no-install-recommends libxml2 libpng12-dev mcrypt curl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libxml2 \
+    libpng12-dev \
+    mcrypt \
+    curl \
+    libmcrypt4 \
+    less \
+    && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 9000
 CMD ["php-fpm"]
