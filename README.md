@@ -1,7 +1,6 @@
 # 10up Docker Library
 
-The Dockerfiles in this repository can be used to compile Docker images intended to be used with
-[Derrick](https://github.com/10up/Derrick).
+The Dockerfiles in this repository can be used to compile Docker images intended to be used as PHP upstreams for WordPress sites.
 
 ## License
 
