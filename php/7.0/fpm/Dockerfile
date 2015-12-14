@@ -5,12 +5,6 @@
 
 FROM debian:jessie
 
-# persistent / runtime deps
-RUN apt-get update && apt-get install -y ca-certificates curl librecode0 libsqlite3-0 libxml2 --no-install-recommends && rm -r /var/lib/apt/lists/*
-
-# phpize deps
-RUN apt-get update && apt-get install -y autoconf file g++ gcc libc-dev make pkg-config re2c --no-install-recommends && rm -r /var/lib/apt/lists/*
-
 ENV PHP_INI_DIR /usr/local/etc/php
 RUN mkdir -p $PHP_INI_DIR/conf.d
 
@@ -31,7 +25,6 @@ RUN buildDeps=" \
 		$PHP_EXTRA_BUILD_DEPS \
 		libcurl4-openssl-dev \
 		libreadline6-dev \
-		librecode-dev \
 		libsqlite3-dev \
 		libssl-dev \
 		libxml2-dev \
@@ -56,15 +49,55 @@ RUN buildDeps=" \
 		--with-curl \
 		--with-openssl \
 		--with-readline \
-		--with-recode \
 		--with-zlib \
 	&& make -j"$(nproc)" \
 	&& make install \
 	&& { find /usr/local/bin /usr/local/sbin -type f -executable -exec strip --strip-all '{}' + || true; } \
-	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps \
 	&& make clean
+	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps \
+	&& apt-get autoremove
 
 COPY docker-php-ext-* /usr/local/bin/
+
+ENV extensionDeps=" \
+        autoconf \
+        gcc \
+        make \
+        rsync \
+        libpng12-dev \
+        libmcrypt-dev \
+        libxml2-dev \
+        libssl-dev \
+        curl \
+	"
+
+RUN extensions=" \
+        gd \
+        mysqli \
+        soap \
+        mcrypt \
+        mbstring \
+    "; \
+    apt-get update && apt-get install -y --no-install-recommends $extensionDeps \
+    && docker-php-ext-install $extensions \
+    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $extensionDeps \
+    && apt-get autoremove
+
+ENV peclDeps=" \
+    curl \
+    libssl-dev \
+    libxml2-dev \
+    ca-certificates \
+    make \
+    autoconf \
+    gcc \
+    "
+
+RUN apt-get update && apt-get install -y --no-install-recommends $peclDeps \
+    && pecl install memcache && echo extension=memcache.so > $PHP_INI_DIR/conf.d/ext-memcache.ini \
+    && pecl install redis && echo extension=redis.so > $PHP_INI_DIR/conf.d/ext-redis.ini \
+    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $peclDeps \
+    && apt-get autoremove
 
 MAINTAINER 10up
 
