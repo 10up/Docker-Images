@@ -22,13 +22,19 @@ ENV PHP_SHA256 7dbdda74c502960febe0544b3e3a7c430389a7a4260e94c73fd8ca26c33b8540
 
 # --enable-mysqlnd is included below because it's harder to compile after the fact the extensions are (since it's a plugin for several extensions, not an extension in itself)
 RUN buildDeps=" \
-		$PHP_EXTRA_BUILD_DEPS \
+		bzip2 \
+		file \
 		libcurl4-openssl-dev \
 		libreadline6-dev \
-		libsqlite3-dev \
 		libssl-dev \
 		libxml2-dev \
-		xz-utils \
+		ca-certificates \
+        curl \
+        libxml2 \
+        gcc \
+        libc-dev \
+        make \
+        pkg-config \
 	" \
 	&& set -x \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
