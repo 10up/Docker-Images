@@ -5,6 +5,9 @@
 
 FROM debian:jessie
 
+# persistent / runtime deps
+RUN apt-get update && apt-get install -y ca-certificates curl libxml2 --no-install-recommends && rm -r /var/lib/apt/lists/*
+
 ENV PHP_INI_DIR /usr/local/etc/php
 RUN mkdir -p $PHP_INI_DIR/conf.d
 
@@ -29,9 +32,6 @@ RUN buildDeps=" \
 		libreadline6-dev \
 		libssl-dev \
 		libxml2-dev \
-		ca-certificates \
-        curl \
-        libxml2 \
         gcc \
         libc-dev \
         make \
