@@ -6,7 +6,10 @@
 FROM debian:jessie
 
 # persistent / runtime deps
-RUN apt-get update && apt-get install -y ca-certificates curl libxml2 --no-install-recommends && rm -r /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y ca-certificates curl librecode0 libssl-dev libxml2-dev libsqlite3-0 libxml2 --no-install-recommends && rm -r /var/lib/apt/lists/*
+
+# phpize deps
+RUN apt-get update && apt-get install -y autoconf file g++ gcc libc-dev make pkg-config re2c --no-install-recommends && rm -r /var/lib/apt/lists/*
 
 ENV PHP_INI_DIR /usr/local/etc/php
 RUN mkdir -p $PHP_INI_DIR/conf.d
@@ -27,15 +30,10 @@ ENV PHP_SHA256 d00dc06fa5e0f3de048fb0cf940b3cc59b43b3f8cad825d4fffb35503cf2e8f2
 RUN buildDeps=" \
 		bzip2 \
 		xz-utils \
-		file \
 		libcurl4-openssl-dev \
 		libreadline6-dev \
-		libssl-dev \
-		libxml2-dev \
-		gcc \
-		libc-dev \
-		make \
-		pkg-config \
+		librecode-dev \
+		libsqlite3-dev \
 	" \
 	&& set -x \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
@@ -56,6 +54,7 @@ RUN buildDeps=" \
 		--with-curl \
 		--with-openssl \
 		--with-readline \
+		--with-recode \
 		--with-zlib \
 	&& make -j"$(nproc)" \
 	&& make install \
@@ -67,15 +66,9 @@ RUN buildDeps=" \
 COPY docker-php-ext-* /usr/local/bin/
 
 ENV extensionDeps=" \
-        autoconf \
-        gcc \
-        make \
         rsync \
         libpng12-dev \
         libmcrypt-dev \
-        libxml2-dev \
-        libssl-dev \
-        curl \
 	"
 
 RUN extensions=" \
@@ -85,25 +78,14 @@ RUN extensions=" \
         mcrypt \
         mbstring \
     "; \
-    apt-get update && apt-get install -y --no-install-recommends $extensionDeps \
+    apt-get update && apt-get install -y --force-yes --no-install-recommends $extensionDeps \
     && docker-php-ext-install $extensions \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $extensionDeps \
     && apt-get autoremove
 
-ENV peclDeps=" \
-    curl \
-    libssl-dev \
-    libxml2-dev \
-    ca-certificates \
-    make \
-    autoconf \
-    gcc \
-    "
-
-RUN apt-get update && apt-get install -y --no-install-recommends $peclDeps \
+RUN apt-get update \
     && pecl install memcache && echo extension=memcache.so > $PHP_INI_DIR/conf.d/ext-memcache.ini \
     && pecl install redis && echo extension=redis.so > $PHP_INI_DIR/conf.d/ext-redis.ini \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $peclDeps \
     && apt-get autoremove
 
 MAINTAINER 10up
