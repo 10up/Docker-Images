@@ -23,6 +23,7 @@ ENV PHP_SHA256 7dbdda74c502960febe0544b3e3a7c430389a7a4260e94c73fd8ca26c33b8540
 # --enable-mysqlnd is included below because it's harder to compile after the fact the extensions are (since it's a plugin for several extensions, not an extension in itself)
 RUN buildDeps=" \
 		bzip2 \
+		xz-utils \
 		file \
 		libcurl4-openssl-dev \
 		libreadline6-dev \

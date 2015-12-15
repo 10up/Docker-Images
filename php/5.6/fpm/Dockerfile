@@ -14,6 +14,7 @@ ENV PHP_VERSION 5.6.16
 
 ENV buildDeps=" \
         bzip2 \
+        xz-utils \
         file \
         libcurl4-openssl-dev \
         libreadline6-dev \
