@@ -85,7 +85,6 @@ RUN extensions=" \
 
 RUN apt-get update \
     && pecl install memcache && echo extension=memcache.so > $PHP_INI_DIR/conf.d/ext-memcache.ini \
-    && pecl install redis && echo extension=redis.so > $PHP_INI_DIR/conf.d/ext-redis.ini \
     && apt-get autoremove
 
 MAINTAINER 10up
