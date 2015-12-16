@@ -66,9 +66,6 @@ RUN buildDeps=" \
 COPY docker-php-ext-* /usr/local/bin/
 
 ENV extensionDeps=" \
-        autoconf \
-        gcc \
-        make \
         rsync \
         libpng12-dev \
         libmcrypt-dev \
