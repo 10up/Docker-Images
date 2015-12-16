@@ -6,7 +6,10 @@
 FROM debian:jessie
 
 # persistent / runtime deps
-RUN apt-get update && apt-get install -y ca-certificates curl libxml2 --no-install-recommends && rm -r /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y ca-certificates curl librecode0 libsqlite3-0 libssl-dev libxml2-dev libxml2 --no-install-recommends && rm -r /var/lib/apt/lists/*
+
+# phpize deps
+RUN apt-get update && apt-get install -y autoconf file g++ gcc libc-dev make pkg-config re2c --no-install-recommends && rm -r /var/lib/apt/lists/*
 
 ENV PHP_INI_DIR /usr/local/etc/php
 RUN mkdir -p $PHP_INI_DIR/conf.d
@@ -25,17 +28,12 @@ ENV PHP_SHA256 7dbdda74c502960febe0544b3e3a7c430389a7a4260e94c73fd8ca26c33b8540
 
 # --enable-mysqlnd is included below because it's harder to compile after the fact the extensions are (since it's a plugin for several extensions, not an extension in itself)
 RUN buildDeps=" \
-		bzip2 \
-		xz-utils \
-		file \
+		$PHP_EXTRA_BUILD_DEPS \
 		libcurl4-openssl-dev \
 		libreadline6-dev \
-		libssl-dev \
-		libxml2-dev \
-        gcc \
-        libc-dev \
-        make \
-        pkg-config \
+		librecode-dev \
+		libsqlite3-dev \
+        xz-utils \
 	" \
 	&& set -x \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
@@ -56,6 +54,7 @@ RUN buildDeps=" \
 		--with-curl \
 		--with-openssl \
 		--with-readline \
+		--with-recode \
 		--with-zlib \
 	&& make -j"$(nproc)" \
 	&& make install \
@@ -73,9 +72,6 @@ ENV extensionDeps=" \
         rsync \
         libpng12-dev \
         libmcrypt-dev \
-        libxml2-dev \
-        libssl-dev \
-        curl \
 	"
 
 RUN extensions=" \
@@ -90,20 +86,9 @@ RUN extensions=" \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $extensionDeps \
     && apt-get autoremove
 
-ENV peclDeps=" \
-    curl \
-    libssl-dev \
-    libxml2-dev \
-    ca-certificates \
-    make \
-    autoconf \
-    gcc \
-    "
-
-RUN apt-get update && apt-get install -y --no-install-recommends $peclDeps \
+RUN apt-get update \
     && pecl install memcache && echo extension=memcache.so > $PHP_INI_DIR/conf.d/ext-memcache.ini \
     && pecl install redis && echo extension=redis.so > $PHP_INI_DIR/conf.d/ext-redis.ini \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $peclDeps \
     && apt-get autoremove
 
 MAINTAINER 10up
@@ -111,5 +96,5 @@ MAINTAINER 10up
 WORKDIR /var/www/html
 COPY php-fpm.conf /usr/local/etc/
 
-EXPOSE 9000
+EXPOSE 9070
 CMD ["php-fpm"]
