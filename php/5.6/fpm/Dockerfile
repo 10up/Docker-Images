@@ -3,10 +3,10 @@
 # Work derived from official PHP Docker Library:
 # Copyright (c) 2014-2015 Docker, Inc.
 
-FROM debian:wheezy
+FROM debian:jessie
 
 # persistent / runtime deps
-RUN apt-get update && apt-get install -y ca-certificates curl libssl-dev libxml2-dev libsqlite3-0 libxml2 --no-install-recommends && rm -r /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y ca-certificates curl librecode0 libssl-dev libxml2-dev libsqlite3-0 libxml2 --no-install-recommends && rm -r /var/lib/apt/lists/*
 
 # phpize deps
 RUN apt-get update && apt-get install -y autoconf file g++ gcc libc-dev make pkg-config re2c --no-install-recommends && rm -r /var/lib/apt/lists/*
@@ -30,6 +30,7 @@ RUN buildDeps=" \
             xz-utils \
             libcurl4-openssl-dev \
             libreadline6-dev \
+            librecode-dev \
     		libsqlite3-dev \
     	" \
 	&& set -x \
