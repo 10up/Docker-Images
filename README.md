@@ -2,7 +2,10 @@
 
 The Dockerfiles in this repository can be used to compile Docker images intended to be used as PHP upstreams for WordPress sites.
 
-## What's Included
+## Nginx
+
+## PHP
+### What's Included
 
 PHP-FPM at:
 
@@ -12,12 +15,12 @@ PHP-FPM at:
 - 5.6.16
 - 7.0.0
 
-## How to use it
+### How to use it
 
 First, run a container:
 
 ```sh
-docker run 
+docker run -d -v /var/www:/var/www --name php7 10up/php-7.0
 ```
 
 Then, set your PHP upstreams in Nginx to point to the container. For clarity, each container listens on a different port:
@@ -40,7 +43,7 @@ Each container will attempt to install the Pecl extensions for caching backends:
 
 (Unless they are unsupported. APCu is PHP7 only. Redis and Memcached are not yet PHP7-compatible.)
 
-## What's Next
+### What's Next
 
 Repair the 5.3 container's OpenSSL support. Currently, it's trying to use 1.0.0 instead of 0.9.8 and this is causing problems when compiling PHP. OpenSSL is merely disabled for now to compensate but needs to be re-enabled.
 
