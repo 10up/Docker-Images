@@ -93,5 +93,5 @@ MAINTAINER 10up
 WORKDIR /var/www/html
 COPY php-fpm.conf /usr/local/etc/
 
-EXPOSE 9000
+EXPOSE 9055
 CMD ["php-fpm"]
