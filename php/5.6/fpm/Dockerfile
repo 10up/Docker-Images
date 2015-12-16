@@ -51,6 +51,7 @@ RUN buildDeps=" \
         --with-curl \
         --with-openssl \
         --with-readline \
+        --with-recode \
         --with-zlib \
 	&& make -j"$(nproc)" \
 	&& make install \
