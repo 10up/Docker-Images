@@ -50,7 +50,7 @@ RUN buildDeps=" \
 		--disable-cgi \
 		--enable-mysqlnd \
 		--with-curl \
-		--with-openssl \
+#		--with-openssl \
 		--with-readline \
 		--with-recode \
 		--with-zlib \
