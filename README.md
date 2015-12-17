@@ -20,7 +20,7 @@ PHP-FPM at:
 First, run a container:
 
 ```sh
-docker run -d -v /var/www:/var/www --name php7 10up/php-7.0
+docker run -d -v /var/www:/var/www --net=host --name php7 10up/php:7.0-fpm
 ```
 
 Then, set your PHP upstreams in Nginx to point to the container. For clarity, each container listens on a different port:
