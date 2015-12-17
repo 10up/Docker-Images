@@ -9,7 +9,7 @@ The Dockerfiles in this repository can be used to compile Docker images intended
 
 PHP-FPM at:
 
-- 5.3.29 (compiled without openssl support for now)
+- 5.3.29 (Currently does not build)
 - 5.4.45
 - 5.5.30
 - 5.6.16
@@ -45,7 +45,9 @@ Each container will attempt to install the Pecl extensions for caching backends:
 
 ### What's Next
 
-Repair the 5.3 container's OpenSSL support. Currently, it's trying to use 1.0.0 instead of 0.9.8 and this is causing problems when compiling PHP. OpenSSL is merely disabled for now to compensate but needs to be re-enabled.
+Repair the 5.3 container.
+- Currently, it's trying to use OpenSSL 1.0.0 instead of 0.9.8 and this is causing problems when compiling PHP. OpenSSL is merely disabled for now to compensate but needs to be re-enabled.
+- The build task currently fails when enabling MySQLi support as MySQL is not installed within the container.
 
 ## License
 
