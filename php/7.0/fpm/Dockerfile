@@ -6,7 +6,7 @@
 FROM debian:jessie
 
 # persistent / runtime deps
-RUN apt-get update && apt-get install -y ca-certificates curl librecode0 libssl-dev libxml2-dev libsqlite3-0 libxml2 --no-install-recommends && rm -r /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y ca-certificates curl libssl-dev libxml2-dev libxml2 --no-install-recommends && rm -r /var/lib/apt/lists/*
 
 # phpize deps
 RUN apt-get update && apt-get install -y autoconf file g++ gcc libc-dev make pkg-config re2c --no-install-recommends && rm -r /var/lib/apt/lists/*
@@ -30,9 +30,6 @@ ENV PHP_SHA256 84fcb8b9c61f70db802d3b6636c6ba602470a375e593375c0c744483aa0c0357
 RUN buildDeps=" \
 		$PHP_EXTRA_BUILD_DEPS \
 		libcurl4-openssl-dev \
-		libreadline6-dev \
-		librecode-dev \
-		libsqlite3-dev \
         xz-utils \
 	" \
 	&& set -x \
@@ -53,8 +50,6 @@ RUN buildDeps=" \
 		--enable-mysqlnd \
 		--with-curl \
 		--with-openssl \
-		--with-readline \
-		--with-recode \
 		--with-zlib \
 	&& make -j"$(nproc)" \
 	&& make install \
