@@ -6,7 +6,7 @@
 FROM debian:jessie
 
 # persistent / runtime deps
-RUN apt-get update && apt-get install -y ca-certificates curl librecode0 libssl-dev libxml2-dev libsqlite3-0 libxml2 --no-install-recommends && rm -r /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y ca-certificates curl libmysqlclient-dev libssl-dev libxml2-dev libxml2 --no-install-recommends && rm -r /var/lib/apt/lists/*
 
 # phpize deps
 RUN apt-get update && apt-get install -y autoconf file g++ gcc libc-dev make pkg-config re2c --no-install-recommends && rm -r /var/lib/apt/lists/*
@@ -16,23 +16,34 @@ RUN mkdir -p $PHP_INI_DIR/conf.d
 
 ENV PHP_EXTRA_CONFIGURE_ARGS --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data
 
-ENV GPG_KEYS 0B96609E270F565C13292B24C13C70B87267B52D 0A95E9A026542D53835E3F3A7DEC4E69FC9C83D7
+ENV GPG_KEYS 0B96609E270F565C13292B24C13C70B87267B52D 0A95E9A026542D53835E3F3A7DEC4E69FC9C83D7 0E604491
 RUN set -xe \
 	&& for key in $GPG_KEYS; do \
 		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
 	done
 
+# compile openssl, otherwise --with-openssl won't work
+RUN OPENSSL_VERSION="1.0.2e" \
+      && cd /tmp \
+      && mkdir openssl \
+      && curl -sL "https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz" -o openssl.tar.gz \
+      && curl -sL "https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz.asc" -o openssl.tar.gz.asc \
+      && gpg --verify openssl.tar.gz.asc \
+      && tar -xzf openssl.tar.gz -C openssl --strip-components=1 \
+      && cd /tmp/openssl \
+      && ./config && make && make install \
+      && rm -rf /tmp/*
+
 ENV PHP_VERSION 5.3.29
 ENV PHP_FILENAME php-5.3.29.tar.xz
 
+# php 5.3 needs older autoconf
 # --enable-mysqlnd is included below because it's harder to compile after the fact the extensions are (since it's a plugin for several extensions, not an extension in itself)
 RUN buildDeps=" \
+		autoconf2.13 \
 		bzip2 \
 		xz-utils \
 		libcurl4-openssl-dev \
-		libreadline6-dev \
-		librecode-dev \
-		libsqlite3-dev \
 	" \
 	&& set -x \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
@@ -49,10 +60,10 @@ RUN buildDeps=" \
 		$PHP_EXTRA_CONFIGURE_ARGS \
 		--disable-cgi \
 		--enable-mysqlnd \
+		--with-mysql \
+		--with-mysqli=mysqlnd \
 		--with-curl \
-#		--with-openssl \
-		--with-readline \
-		--with-recode \
+		--with-openssl=/usr/local/ssl \
 		--with-zlib \
 	&& make -j"$(nproc)" \
 	&& make install \
