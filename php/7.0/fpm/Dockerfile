@@ -24,7 +24,6 @@ RUN set -xe \
 
 ENV PHP_VERSION 7.0.1
 ENV PHP_FILENAME php-7.0.1.tar.xz
-ENV PHP_SHA256 84fcb8b9c61f70db802d3b6636c6ba602470a375e593375c0c744483aa0c0357
 
 # --enable-mysqlnd is included below because it's harder to compile after the fact the extensions are (since it's a plugin for several extensions, not an extension in itself)
 RUN buildDeps=" \
@@ -35,7 +34,6 @@ RUN buildDeps=" \
 	&& set -x \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
 	&& curl -fSL "http://php.net/get/$PHP_FILENAME/from/this/mirror" -o "$PHP_FILENAME" \
-	&& echo "$PHP_SHA256 *$PHP_FILENAME" | sha256sum -c - \
 	&& curl -fSL "http://php.net/get/$PHP_FILENAME.asc/from/this/mirror" -o "$PHP_FILENAME.asc" \
 	&& gpg --verify "$PHP_FILENAME.asc" \
 	&& mkdir -p /usr/src/php \
@@ -81,9 +79,9 @@ RUN extensions=" \
 RUN apt-get update \
 #	&& pecl install redis && echo extension=redis.so > $PHP_INI_DIR/conf.d/ext-redis.ini \
 #	&& pecl install memcached && echo extension=memcached.so > $PHP_INI_DIR/conf.d/ext-memcached.ini \
-    && pecl install memcache && echo extension=memcache.so > $PHP_INI_DIR/conf.d/ext-memcache.ini \
-    && pecl install apcu && echo extension=apcu.so > $PHP_INI_DIR/conf.d/ext-apcu.ini \
-    && apt-get autoremove
+#	&& pecl install memcache && echo extension=memcache.so > $PHP_INI_DIR/conf.d/ext-memcache.ini \
+	&& pecl install apcu && echo extension=apcu.so > $PHP_INI_DIR/conf.d/ext-apcu.ini \
+	&& apt-get autoremove
 
 MAINTAINER 10up
 
