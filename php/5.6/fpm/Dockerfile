@@ -22,8 +22,8 @@ RUN set -xe \
 		gpg --keyserver pool.sks-keyservers.net --recv-keys "$key"; \
 	done
 
-ENV PHP_VERSION 5.6.16
-ENV PHP_FILENAME php-5.6.16.tar.xz
+ENV PHP_VERSION 5.6.17
+ENV PHP_FILENAME php-5.6.17.tar.xz
 
 RUN buildDeps=" \
             bzip2 \

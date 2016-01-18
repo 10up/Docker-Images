@@ -16,14 +16,14 @@ RUN mkdir -p $PHP_INI_DIR/conf.d
 
 ENV PHP_EXTRA_CONFIGURE_ARGS --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data
 
-ENV GPG_KEYS 1A4E8B7277C42E53DBA9C7B9BCAA30EA9C0D5763
+ENV GPG_KEYS 6E4F6AB321FDC07F2C332E3AC2BF0BC433CFC8B3 1A4E8B7277C42E53DBA9C7B9BCAA30EA9C0D5763
 RUN set -xe \
 	&& for key in $GPG_KEYS; do \
 		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
 	done
 
-ENV PHP_VERSION 7.0.1
-ENV PHP_FILENAME php-7.0.1.tar.xz
+ENV PHP_VERSION 7.0.2
+ENV PHP_FILENAME php-7.0.2.tar.xz
 
 # --enable-mysqlnd is included below because it's harder to compile after the fact the extensions are (since it's a plugin for several extensions, not an extension in itself)
 RUN buildDeps=" \
