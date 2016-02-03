@@ -87,6 +87,28 @@ RUN apt-get update && apt-get install -y --no-install-recommends $peclDeps \
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $peclDeps \
 	&& apt-get autoremove
 
+ENV memcachedDeps=" \
+		git \
+		libmemcached-dev \
+	"
+
+RUN apt-get update && apt-get install -y --no-install-recommends $memcachedDeps \
+	&& git clone https://github.com/php-memcached-dev/php-memcached.git && cd php-memcached \
+	&& git checkout php7 \
+	&& phpize \
+	&& ./configure --disable-memcached-sasl \
+	&& make && make install \
+	&& echo extension=memcached.so > $PHP_INI_DIR/conf.d/ext-memcached.ini \
+	&& curl -fSL "https://github.com/websupport-sk/pecl-memcache/archive/fdbd46bbc6f53ed6e024521895e142cbfc9b3340/memcache-3.0.9-fdbd46b.tar.gz" -o "memcache.tar.gz" \
+	&& mkdir -p /usr/src/php-memcache \
+    && tar -xf "memcache.tar.gz" -C /usr/src/php-memcache --strip-components=1 \
+    && cd /usr/src/php-memcache && phpize \
+    && ./configure \
+    && make && make install \
+    && echo extension=memcache.so > $PHP_INI_DIR/conf.d/ext-memcache.ini \
+	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $memcachedDeps \
+	&& apt-get autoremove
+
 MAINTAINER 10up
 
 WORKDIR /var/www/html
