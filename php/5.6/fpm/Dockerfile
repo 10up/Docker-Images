@@ -22,8 +22,8 @@ RUN set -xe \
 		gpg --keyserver pool.sks-keyservers.net --recv-keys "$key"; \
 	done
 
-ENV PHP_VERSION 5.6.19
-ENV PHP_FILENAME php-5.6.19.tar.xz
+ENV PHP_VERSION 5.6.20
+ENV PHP_FILENAME php-5.6.20.tar.xz
 
 RUN buildDeps=" \
             bzip2 \
