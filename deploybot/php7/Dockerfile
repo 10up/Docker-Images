@@ -5,7 +5,7 @@ RUN cd /tmp && \
 	bash setup_6.x && \
 	/usr/bin/apt-get install -y nodejs git zlib1g-dev && \
 	npm -g install yarn gulp && \
-	docker-php-ext-install zip
+	docker-php-ext-install zip bzip2
 
 # Register the COMPOSER_HOME environment variable
 ENV COMPOSER_HOME /composer
