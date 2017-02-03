@@ -3,9 +3,11 @@ from php:7.0.13-cli
 RUN cd /tmp && \
 	/usr/bin/curl -sL -o setup_6.x https://deb.nodesource.com/setup_6.x && \
 	bash setup_6.x && \
-	/usr/bin/apt-get install -y nodejs git zlib1g-dev libbz2-dev && \
+	/usr/bin/apt-get update && \
+	/usr/bin/apt-get install -y nodejs git zlib1g-dev libbz2-dev libpng12-dev libjpeg-dev && \
 	npm -g install yarn gulp grunt && \
-	docker-php-ext-install zip bz2
+	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr && \
+	docker-php-ext-install zip bz2 gd
 
 # Register the COMPOSER_HOME environment variable
 ENV COMPOSER_HOME /composer
