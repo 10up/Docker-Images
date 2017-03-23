@@ -4,8 +4,8 @@ RUN cd /tmp && \
 	/usr/bin/curl -sL -o setup_6.x https://deb.nodesource.com/setup_6.x && \
 	bash setup_6.x && \
 	/usr/bin/apt-get update && \
-	/usr/bin/apt-get install -y rubygems rubygems-integration inotify-tools nodejs git zlib1g-dev libbz2-dev libpng12-dev libjpeg-dev && \
-	npm -g install yarn gulp grunt && \
+	/usr/bin/apt-get install -y bzip2 rubygems rubygems-integration inotify-tools nodejs git zlib1g-dev libbz2-dev libpng12-dev libjpeg-dev && \
+	npm -g install yarn gulp grunt grunt-cli grunt-sass node-sass && \
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr && \
 	docker-php-ext-install zip bz2 gd
 
