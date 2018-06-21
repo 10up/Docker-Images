@@ -29,3 +29,13 @@ RUN curl -o /tmp/composer-setup.php https://getcomposer.org/installer \
 ENV COMPOSER_VERSION 1.3.1
 # Install Composer
 RUN php /tmp/composer-setup.php --no-ansi --install-dir=/usr/local/bin --filename=composer --version=${COMPOSER_VERSION} && rm -rf /tmp/composer-setup.php
+
+RUN mkdir ~/.ssh && \
+    chmod 600 ~/.ssh && \
+    touch ~/.ssh/known_hosts && \
+    chmod 600 ~/.ssh/known_hosts && \
+    ssh-keyscan github.com >> ~/.ssh/known_hosts && \
+    ssh-keyscan 10up.git.beanstalkapp.com >> ~/.ssh/known_hosts
+
+COPY ssh_config /root/.ssh/config
+RUN chmod 600 /root/.ssh/config
